@@ -1,0 +1,16 @@
+
+template:
+  description: A static website on Google Cloud
+  config:
+    gcp:project:
+      description: The Google Cloud project to deploy into
+      default: pulumi-development
+    path:
+      type: String
+      default: ./site
+    indexDocument:
+      type: String
+      default: index.html
+    errorDocument:
+      type: String
+      default: error.html

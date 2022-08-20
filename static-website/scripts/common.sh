@@ -1,4 +1,4 @@
 #!/bin/bash
 
-CLOUDS="aws azure"
-LANGUAGES="typescript go csharp" # python yaml java
+CLOUDS="gcp"
+LANGUAGES="typescript python go csharp" # yaml java
