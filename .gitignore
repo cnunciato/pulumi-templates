@@ -1,0 +1,10 @@
+.DS_Store
+.envrc
+dist
+test
+*/typescript
+*/python
+*/go
+*/csharp
+*/java
+*/yaml

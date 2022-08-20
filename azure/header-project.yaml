@@ -1,0 +1,3 @@
+name: templates-static-website-{cloud}-{lang}
+runtime: yaml
+description: A static website on Azure
