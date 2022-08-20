@@ -1,0 +1,3 @@
+name: templates-static-website-azure-typescript
+runtime: nodejs
+description: A static website on Azure
