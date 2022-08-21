@@ -17,3 +17,7 @@ destroy:
 .PHONY: test
 test:
 	./scripts/test.sh
+
+.PHONY: copy
+copy:
+	./scripts/copy.sh

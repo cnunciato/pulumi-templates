@@ -12,3 +12,6 @@ destroy:
 
 test:
 	$(MAKE) -C static-website test
+
+copy:
+	$(MAKE) -C static-website copy
