@@ -23,7 +23,11 @@ for cloud in $CLOUDS; do
             template_dir="../dist/static-website-${cloud}-${lang}"
             cp -R "$lang" "$template_dir"
             cat "header-template.yaml" "template.yaml" "append.yaml" > "$template_dir/Pulumi.yaml"
-            cat "append.yaml" > "$template_dir/Pulumi.yaml.append"
+
+            # Copy in the .append file for YAML templates.
+            if [ "$lang" == "yaml" ]; then
+                cat "append.yaml" > "$template_dir/Pulumi.yaml.append"
+            fi
 
             # Remove the generated Pulumi.yaml.
             rm -f Pulumi.yaml
