@@ -10,7 +10,7 @@ for cloud in $CLOUDS; do
         for lang in $LANGUAGES; do
 
             # Create a Pulumi.yaml to generate projects from.
-            cat "header-project.yaml" "append.yaml" | sed -e "s/{cloud}/$cloud/g" -e "s/{lang}/$lang/g" > Pulumi.yaml
+            cat "header-project.yaml" "body.yaml" | sed -e "s/{cloud}/$cloud/g" -e "s/{lang}/$lang/g" > Pulumi.yaml
 
             # Convert the program into the current language.
             rm -rf "$lang"
@@ -22,11 +22,11 @@ for cloud in $CLOUDS; do
             # Prepare and copy the completed template to the dist folder.
             template_dir="../dist/static-website-${cloud}-${lang}"
             cp -R "$lang" "$template_dir"
-            cat "header-template.yaml" "template.yaml" "append.yaml" > "$template_dir/Pulumi.yaml"
+            cat "header-template.yaml" "template.yaml" "body.yaml" > "$template_dir/Pulumi.yaml"
 
             # Copy in the .append file for YAML templates.
             if [ "$lang" == "yaml" ]; then
-                cat "append.yaml" > "$template_dir/Pulumi.yaml.append"
+                cat "body.yaml" > "$template_dir/Pulumi.yaml.append"
             fi
 
             # Remove the generated Pulumi.yaml.
