@@ -1,4 +1,4 @@
-# pulumi-templates
+# pulumi-templates-gen
 
 A bunch of YAML and Bash that I use for producing Pulumi project templates.
 
