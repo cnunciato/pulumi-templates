@@ -1,6 +1,5 @@
 .DS_Store
 .envrc
-dist
 test
 */*/Pulumi.yaml
 */*/typescript

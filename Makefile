@@ -1,17 +1,19 @@
+.PHONY: build
 build:
 	$(MAKE) -C static-website build
 
+.PHONY: clean
 clean:
 	$(MAKE) -C static-website clean
 
-deploy:
-	$(MAKE) -C static-website deploy
-
-destroy:
-	$(MAKE) -C static-website destroy
-
+.PHONY: test
 test:
 	$(MAKE) -C static-website test
 
+.PHONY: test-one
+test-one:
+	$(MAKE) -C static-website test-one
+
+.PHONY: copy
 copy:
 	$(MAKE) -C static-website copy
