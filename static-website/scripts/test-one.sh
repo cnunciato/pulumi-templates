@@ -15,7 +15,8 @@ echo "##"
 
 pulumi -C "$test_dir" destroy --yes || true
 pulumi -C "$test_dir" stack rm --yes || true
-rm -rf "$test_dir" && mkdir -p "$test_dir"
+rm -rf "$test_dir"
+mkdir -p "$test_dir"
 
 pushd "$test_dir"
     pulumi new "../../dist/static-website-${cloud_lang}"

@@ -52,7 +52,7 @@ for cloud in $CLOUDS; do
 
             # Delete the Main.yamls -- I don't think we need them.
             if [ "$lang" == "yaml" ]; then
-                rm "$template_dir/Main.yaml"
+                rm -f "$template_dir/Main.yaml"
             fi
 
             # Remove the generated Pulumi.yaml.

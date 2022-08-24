@@ -13,10 +13,6 @@ import (
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		cfg := config.New(ctx, "")
-		gcpProject := "pulumi-development"
-		if param := cfg.Get("gcpProject"); param != "" {
-			gcpProject = param
-		}
 		path := "./site"
 		if param := cfg.Get("path"); param != "" {
 			path = param
@@ -80,7 +76,7 @@ func main() {
 			return err
 		}
 		_, err = compute.NewGlobalForwardingRule(ctx, "http-forwarding-rule", &compute.GlobalForwardingRuleArgs{
-			IpAddress:  pulumi.String("ip.address"),
+			IpAddress:  ip.Address,
 			IpProtocol: pulumi.String("TCP"),
 			PortRange:  pulumi.String("80"),
 			Target:     httpProxy.SelfLink,

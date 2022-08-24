@@ -17,9 +17,9 @@ The `scripts/build.sh` file contains a handful of fixes, but some are beyond my 
 
 Stemming from https://github.com/pulumi/pulumi-yaml/issues/317:
 
-1. The CDN endpoint needs a hostname, not a fully qualified URL.
+1. The CDN endpoint needs the hostname, not the fully qualified URL, of the the storage-account resource.
 
-    In `dist/static-website-azure-yaml/Pulumi.yaml` and `Pulumi.yaml.append`, add the following `variables` block:
+    In `dist/static-website-azure-yaml/Pulumi.yaml` and `Pulumi.yaml.append`, make the following changes:
 
     ```yaml
     variables:

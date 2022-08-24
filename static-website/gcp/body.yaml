@@ -1,8 +1,5 @@
 
 configuration:
-  gcp:project:
-    type: String
-    default: pulumi-development
   path:
     type: String
     default: ./site

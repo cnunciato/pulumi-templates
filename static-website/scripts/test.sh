@@ -11,9 +11,10 @@ for cloud in $CLOUDS; do
         echo "# Testing $test_dir"
         echo "##"
 
-        pulumi -C "$test_dir" destroy --yes || true
-        pulumi -C "$test_dir" stack rm --yes || true
-        rm -rf "$test_dir" && mkdir -p "$test_dir"
+        pulumi destroy -s "cnunciato/static-website-test-${cloud}-${lang}/dev" --yes || true
+        pulumi stack rm "cnunciato/static-website-test-${cloud}-${lang}/dev" --yes || true
+        rm -rf "$test_dir"
+        mkdir -p "$test_dir"
 
         pushd "$test_dir"
             pulumi new --yes "../../dist/static-website-${cloud}-${lang}"
