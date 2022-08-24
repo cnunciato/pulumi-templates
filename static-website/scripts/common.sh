@@ -1,4 +1,5 @@
 #!/bin/bash
 
-export CLOUDS="aws azure gcp"
-export LANGUAGES="typescript python go csharp yaml" # Can't do Java yet, because synced-folder doesn't exist for it.
+# Deliberately ordered from most to least fussy.
+export CLOUDS="azure gcp aws"
+export LANGUAGES="yaml go csharp python typescript" # Can't do Java yet, because synced-folder doesn't exist for it.
