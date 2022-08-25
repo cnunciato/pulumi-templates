@@ -69,4 +69,6 @@ resources:
 
 outputs:
   originURL: ${account.primaryEndpoints.web}
+  originHostname: ${account.primaryEndpoints.web}
   cdnURL: https://${endpoint.hostName}
+  cdnHostname: ${endpoint.hostName}

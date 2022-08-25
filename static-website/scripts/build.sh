@@ -33,7 +33,11 @@ for cloud in $CLOUDS; do
             # Prepare and copy the completed template to the dist folder.
             template_dir="../dist/static-website-${cloud}-${lang}"
             cp -R "$lang" "$template_dir"
-            cat "header-template.yaml" "template.yaml" "body.yaml" > "$template_dir/Pulumi.yaml"
+            cat "header-template.yaml" "template.yaml" > "$template_dir/Pulumi.yaml"
+
+            if [ "$lang" == "yaml" ]; then
+                cat "body.yaml" >> "$template_dir/Pulumi.yaml"
+            fi
 
             # Set the appropriate runtime for the template.
             if [ "$lang" == "typescript" ] || [ "$lang" == "javascript" ]; then
