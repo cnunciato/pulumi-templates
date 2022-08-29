@@ -3,9 +3,6 @@
 set -o errexit -o pipefail
 source ./scripts/common.sh
 
-cloud=""
-lang=""
-
 read -p "cloud-lang: " cloud_lang
 
 test_dir="test/static-website-test-${cloud_lang}"
