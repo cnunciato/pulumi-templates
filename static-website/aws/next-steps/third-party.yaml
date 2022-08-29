@@ -1,0 +1,52 @@
+
+configuration:
+  path:
+    type: String
+    default: ./site
+  indexDocument:
+    type: String
+    default: index.html
+  errorDocument:
+    type: String
+    default: error.html
+  domain:
+    type: String
+  subdomain:
+    type: String
+
+variables:
+  zone:
+    Fn::Invoke:
+      Function: cloudflare:index/getZone:getZone
+      Arguments:
+        name: ${domain}
+
+resources:
+  bucket:
+    type: aws:s3:Bucket
+    properties:
+      acl: public-read
+      website:
+        indexDocument: ${indexDocument}
+        errorDocument: ${errorDocument}
+
+  bucket-folder:
+    type: synced-folder:index:S3BucketFolder
+    properties:
+      path: ${path}
+      bucketName: ${bucket.bucket}
+      acl: public-read
+
+  cname:
+    type: cloudflare:Record
+    properties:
+      name: ${subdomain}
+      zoneId: ${zone.zoneId}
+      type: "CNAME"
+      value: ${bucket.websiteDomain}
+      proxied: true
+
+outputs:
+  originURL: http://${bucket.websiteEndpoint}
+  originHostname: ${bucket.websiteEndpoint}
+  domainURL:
