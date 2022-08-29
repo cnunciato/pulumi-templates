@@ -66,7 +66,6 @@ const cdn = new aws.cloudfront.Distribution("cdn", {
     },
     viewerCertificate: {
         cloudfrontDefaultCertificate: true,
-        sslSupportMethod: "sni-only",
     },
 });
 export const originURL = pulumi.interpolate`http://${bucket.websiteEndpoint}`;

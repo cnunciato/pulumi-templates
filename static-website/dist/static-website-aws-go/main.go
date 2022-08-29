@@ -97,7 +97,6 @@ func main() {
 			},
 			ViewerCertificate: &cloudfront.DistributionViewerCertificateArgs{
 				CloudfrontDefaultCertificate: pulumi.Bool(true),
-				SslSupportMethod:             pulumi.String("sni-only"),
 			},
 		})
 		if err != nil {

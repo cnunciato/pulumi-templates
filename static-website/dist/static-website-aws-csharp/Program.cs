@@ -95,7 +95,6 @@ return await Deployment.RunAsync(() =>
         ViewerCertificate = new Aws.CloudFront.Inputs.DistributionViewerCertificateArgs
         {
             CloudfrontDefaultCertificate = true,
-            SslSupportMethod = "sni-only",
         },
     });
 
