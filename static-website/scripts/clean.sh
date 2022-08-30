@@ -3,7 +3,7 @@
 set -o errexit -o pipefail
 source ./scripts/common.sh
 
-rm -rf dist test
+rm -rf test
 
 for cloud in $CLOUDS; do
     for lang in $LANGUAGES; do

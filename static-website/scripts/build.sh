@@ -3,7 +3,7 @@
 set -o errexit -o pipefail
 source ./scripts/common.sh
 
-mkdir -p dist
+rm -rf dist && mkdir dist
 
 for cloud in $CLOUDS; do
     pushd "$cloud"
@@ -71,6 +71,6 @@ find dist -name 'bin' -type d -prune -exec rm -rf '{}' +
 find dist -name 'obj' -type d -prune -exec rm -rf '{}' +
 find dist -name 'lib' -type d -prune -exec rm -rf '{}' +
 find dist -name 'include' -type d -prune -exec rm -rf '{}' +
-find dist -name 'pyvenv.cfv' -prune -exec rm '{}' +
+find dist -name 'pyvenv.cfg' -prune -exec rm '{}' +
 find dist -name 'yarn.lock' -prune -exec rm '{}' +
 find dist -name 'go.sum' -prune -exec rm '{}' +
