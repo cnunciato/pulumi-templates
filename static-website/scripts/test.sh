@@ -17,7 +17,13 @@ for cloud in $CLOUDS; do
         mkdir -p "$test_dir"
 
         pushd "$test_dir"
-            pulumi new --yes "../../dist/static-website-${cloud}-${lang}"
+
+            if [ "$cloud" == "gcp" ]; then
+                pulumi new --yes "../../dist/static-website-${cloud}-${lang}" -c "gcp:project=pulumi-development"
+            else
+                pulumi new --yes "../../dist/static-website-${cloud}-${lang}"
+            fi
+
             pulumi up --yes
             pulumi destroy --yes
             pulumi stack rm --yes

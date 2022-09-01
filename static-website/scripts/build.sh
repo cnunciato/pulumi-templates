@@ -27,8 +27,8 @@ for cloud in $CLOUDS; do
                 sed -i '' 's/type: string/type: String/g' "$lang/Main.yaml" || true
             fi
 
-            # Copy the site folder into the project.
-            cp -R "../site" "$lang/"
+            # Copy the www folder into the project.
+            cp -R "../www" "$lang/"
 
             # Prepare and copy the completed template to the dist folder.
             template_dir="../dist/static-website-${cloud}-${lang}"

@@ -2,7 +2,7 @@
 configuration:
   path:
     type: String
-    default: ./site
+    default: ./www
   indexDocument:
     type: String
     default: index.html
