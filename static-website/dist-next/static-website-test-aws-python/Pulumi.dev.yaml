@@ -1,0 +1,7 @@
+config:
+  aws:region: us-west-2
+  static-website-test-aws-python:domain: pulumi-demos.net
+  static-website-test-aws-python:errorDocument: error.html
+  static-website-test-aws-python:indexDocument: index.html
+  static-website-test-aws-python:path: ./www
+  static-website-test-aws-python:subdomain: christian-test-python

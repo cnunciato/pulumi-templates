@@ -1,0 +1,144 @@
+name: static-website-test-aws-yaml
+description: A static website on AWS
+runtime: yaml
+
+# Import the program's configuration settings.
+configuration:
+  path:
+    type: String
+    default: ./www
+  indexDocument:
+    type: String
+    default: index.html
+  errorDocument:
+    type: String
+    default: error.html
+  domain:
+    type: String
+  subdomain:
+    type: String
+
+variables:
+  domainName: ${subdomain}.${domain}
+
+  # Look up your existing Route 53-managed zone.
+  zone:
+    Fn::Invoke:
+      Function: aws:route53:getZone
+      Arguments:
+        name: ${domain}
+
+resources:
+
+  us-east-provider:
+    type: pulumi:providers:aws
+    properties:
+      region: us-east-1
+
+  # Create an S3 bucket and configure it as a website.
+  bucket:
+    type: aws:s3:Bucket
+    properties:
+      acl: public-read
+      website:
+        indexDocument: ${indexDocument}
+        errorDocument: ${errorDocument}
+
+  # Use a synced folder to manage the files of the website.
+  bucket-folder:
+    type: synced-folder:index:S3BucketFolder
+    properties:
+      path: ${path}
+      bucketName: ${bucket.bucket}
+      acl: public-read
+
+  # Provision a new ACM certificate.
+  certificate:
+    type: aws:acm:Certificate
+    properties:
+      domainName: ${domainName}
+      validationMethod: DNS
+    options:
+      # ACM certificates must be created in the us-east-1 region.
+      provider: ${us-east-provider}
+
+  # Validate the ACM certificate with DNS.
+  certificateValidation:
+    type: aws:route53:Record
+    properties:
+      name: ${certificate.domainValidationOptions[0].resourceRecordName}
+      type: ${certificate.domainValidationOptions[0].resourceRecordType}
+      zoneId: ${zone.zoneId}
+      ttl: 60
+      records:
+        - ${certificate.domainValidationOptions[0].resourceRecordValue}
+
+  # Create a CloudFront CDN to distribute and cache the website.
+  cdn:
+    type: aws:cloudfront:Distribution
+    properties:
+      enabled: true
+      origins:
+        - originId: ${bucket.arn}
+          domainName: ${bucket.websiteEndpoint}
+          customOriginConfig:
+            originProtocolPolicy: http-only
+            httpPort: 80
+            httpsPort: 443
+            originSslProtocols:
+              - TLSv1.2
+      defaultCacheBehavior:
+        targetOriginId: ${bucket.arn}
+        viewerProtocolPolicy: redirect-to-https
+        allowedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+        cachedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+        compress: true
+        defaultTtl: 600
+        maxTtl: 600
+        minTtl: 600
+        forwardedValues:
+          queryString: true
+          cookies:
+            forward: all
+      priceClass: PriceClass_100
+      customErrorResponses:
+        - errorCode: 404
+          responseCode: 404
+          responsePagePath: /${errorDocument}
+      restrictions:
+        geoRestriction:
+          restrictionType: none
+      aliases:
+        - ${domainName}
+      viewerCertificate:
+        cloudfrontDefaultCertificate: false
+        acmCertificateArn: ${certificate.arn}
+        sslSupportMethod: sni-only
+
+  # Create a DNS A record to point to the CDN.
+  ${domainName}:
+    type: aws:route53:Record
+    properties:
+      name: ${subdomain}
+      zoneId: ${zone.zoneId}
+      type: A
+      aliases:
+        - name: ${cdn.domainName}
+          zoneId: ${cdn.hostedZoneId}
+          evaluateTargetHealth: true
+    options:
+      dependsOn:
+        - ${certificate}
+
+outputs:
+  originURL: http://${bucket.websiteEndpoint}
+  originHostname: ${bucket.websiteEndpoint}
+  cdnURL: https://${cdn.domainName}
+  cdnHostname: ${cdn.domainName}
+  domainName: https://${domainName}

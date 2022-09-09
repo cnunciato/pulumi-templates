@@ -1,0 +1,7 @@
+config:
+  aws:region: us-west-2
+  static-website-test-aws-go:domain: pulumi-demos.net
+  static-website-test-aws-go:errorDocument: error.html
+  static-website-test-aws-go:indexDocument: index.html
+  static-website-test-aws-go:path: ./www
+  static-website-test-aws-go:subdomain: christian-test-go

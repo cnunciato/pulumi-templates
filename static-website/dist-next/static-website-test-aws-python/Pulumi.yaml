@@ -1,0 +1,6 @@
+name: static-website-test-aws-python
+description: A static website on AWS
+runtime:
+    name: python
+    options:
+        virtualenv: venv

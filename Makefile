@@ -14,6 +14,10 @@ test:
 test-one:
 	$(MAKE) -C static-website test-one
 
+.PHONY: next-steps
+next-steps:
+	$(MAKE) -C static-website next-steps
+
 .PHONY: copy
 copy:
 	$(MAKE) -C static-website copy

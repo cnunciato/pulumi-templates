@@ -1,0 +1,7 @@
+config:
+  aws:region: us-west-2
+  static-website-test-aws-yaml:domain: pulumi-demos.net
+  static-website-test-aws-yaml:errorDocument: error.html
+  static-website-test-aws-yaml:indexDocument: index.html
+  static-website-test-aws-yaml:path: ./www
+  static-website-test-aws-yaml:subdomain: christian-test-yaml

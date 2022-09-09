@@ -14,6 +14,10 @@ test:
 test-one:
 	./scripts/test-one.sh
 
+.PHONY: next-steps
+next-steps:
+	./scripts/next-steps.sh
+
 .PHONY: copy
 copy:
 	./scripts/copy.sh

@@ -1,0 +1,3 @@
+name: static-website-test-aws-go
+description: A static website on AWS
+runtime: go
