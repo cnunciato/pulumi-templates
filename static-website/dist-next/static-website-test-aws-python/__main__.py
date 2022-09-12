@@ -9,7 +9,7 @@ index_document = config.get("indexDocument") or "index.html"
 error_document = config.get("errorDocument") or "error.html"
 domain = config.require("domain");
 subdomain = config.require("subdomain");
-domain_name = subdomain + "." + domain;
+domain_name = f"{subdomain}.{domain}";
 
 # Create an S3 bucket and configure it as a website.
 bucket = aws.s3.Bucket(
@@ -135,4 +135,4 @@ pulumi.export("originURL", pulumi.Output.concat("http://", bucket.website_endpoi
 pulumi.export("originHostname", bucket.website_endpoint)
 pulumi.export("cdnURL", pulumi.Output.concat("https://", cdn.domain_name))
 pulumi.export("cdnHostname", cdn.domain_name)
-pulumi.export("domainName", "https://" + domain_name)
+pulumi.export("domainURL", "https://" + domain_name)

@@ -64,8 +64,7 @@ func main() {
 			return err
 		}
 
-		// Provision a new ACM certificate. Note that these certificates must be
-		// provisioned in the us-east-1 region.
+		// Provision a new ACM certificate in the us-east-1 region.
 		provider, _ := aws.NewProvider(ctx, "us-east-provider", &aws.ProviderArgs{
 			Region: pulumi.StringPtr("us-east-1"),
 		})

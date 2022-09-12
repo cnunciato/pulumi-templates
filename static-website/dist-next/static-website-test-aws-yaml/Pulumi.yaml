@@ -141,4 +141,4 @@ outputs:
   originHostname: ${bucket.websiteEndpoint}
   cdnURL: https://${cdn.domainName}
   cdnHostname: ${cdn.domainName}
-  domainName: https://${domainName}
+  domainURL: https://${domainName}

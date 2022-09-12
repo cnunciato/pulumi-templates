@@ -172,6 +172,6 @@ return await Deployment.RunAsync(() =>
         ["originHostname"] = bucket.WebsiteEndpoint,
         ["cdnURL"] = Output.Format($"https://{cdn.DomainName}"),
         ["cdnHostname"] = cdn.DomainName,
-        ["domainName"] = $"https://{subdomain}.{domain}",
+        ["domainURL"] = $"https://{subdomain}.{domain}",
     };
 });
