@@ -1,0 +1,5 @@
+config:
+  azure-native:location: WestUS
+  static-website-test-azure-yaml:errorDocument: error.html
+  static-website-test-azure-yaml:indexDocument: index.html
+  static-website-test-azure-yaml:path: ./www

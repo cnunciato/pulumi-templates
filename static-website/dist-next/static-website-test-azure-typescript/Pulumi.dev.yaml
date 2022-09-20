@@ -1,0 +1,8 @@
+config:
+  azure-native:location: WestUS
+  static-website-test-azure-typescript:domain: pulumi-dev.net
+  static-website-test-azure-typescript:errorDocument: error.html
+  static-website-test-azure-typescript:indexDocument: index.html
+  static-website-test-azure-typescript:path: ./www
+  static-website-test-azure-typescript:subdomain: christian-test
+  static-website-test-azure-typescript:zoneResourceGroupName: pulumi-dev-shared
