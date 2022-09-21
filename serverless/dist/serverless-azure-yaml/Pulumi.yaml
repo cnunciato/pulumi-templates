@@ -1,0 +1,127 @@
+name: ${PROJECT}
+description: ${DESCRIPTION}
+runtime: yaml
+
+template:
+  description: A serverless app on Azure
+  config:
+    azure-native:location:
+      description: The Azure region to deploy into
+      default: WestUS
+    path:
+      description: The path to the folder containing the website
+      default: ./www
+    indexDocument:
+      description: The file to use for top-level pages
+      default: index.html
+    errorDocument:
+      description: The file to use for error pages
+      default: error.html
+
+configuration:
+  path:
+    type: String
+    default: ./www
+  indexDocument:
+    type: String
+    default: index.html
+  errorDocument:
+    type: String
+    default: error.html
+
+variables:
+  blobSAS:
+    Fn::Invoke:
+      Function: azure-native:storage:listStorageAccountServiceSAS
+      Arguments:
+        accountName: ${account.name}
+        protocols: https
+        sharedAccessExpiryTime: "2030-01-01"
+        sharedAccessStartTime: "2021-01-01"
+        resourceGroupName: ${resource-group.name}
+        resource: c
+        permissions: r
+        canonicalizedResource: /blob/${account.name}/${container.name}
+        contentType: application/json
+        cacheControl: max-age=5
+        contentDisposition: inline
+        contentEncoding: deflate
+
+  source:
+    Fn::FileArchive: ./src
+
+resources:
+  resource-group:
+    type: azure-native:resources:ResourceGroup
+
+  account:
+    type: azure-native:storage:StorageAccount
+    properties:
+      resourceGroupName: ${resource-group.name}
+      kind: StorageV2
+      sku:
+        name: Standard_LRS
+
+  website:
+    type: azure-native:storage:StorageAccountStaticWebsite
+    properties:
+      resourceGroupName: ${resource-group.name}
+      accountName: ${account.name}
+      indexDocument: ${indexDocument}
+      error404Document: ${errorDocument}
+
+  synced-folder:
+    type: synced-folder:index:AzureBlobFolder
+    properties:
+      path: ${path}
+      resourceGroupName: ${resource-group.name}
+      storageAccountName: ${account.name}
+      containerName: ${website.containerName}
+
+  plan:
+    type: azure-native:web:AppServicePlan
+    properties:
+      resourceGroupName: ${resource-group.name}
+      sku:
+        name: Y1
+        tier: Dynamic
+
+  container:
+    type: azure-native:storage:BlobContainer
+    properties:
+      accountName: ${account.name}
+      resourceGroupName: ${resource-group.name}
+      publicAccess: None
+
+  blob:
+    type: azure-native:storage:Blob
+    properties:
+      accountName: ${account.name}
+      resourceGroupName: ${resource-group.name}
+      containerName: ${container.name}
+      source: ${source}
+      # type: block
+
+  app:
+    type: azure-native:web:WebApp
+    properties:
+      resourceGroupName: ${resource-group.name}
+      serverFarmId: ${plan.id}
+      kind: FunctionApp
+      siteConfig:
+        appSettings:
+          - name: runtime
+            value: node
+          - name: FUNCTIONS_WORKER_RUNTIME
+            value: node
+          - name: WEBSITE_RUN_FROM_PACKAGE
+            value: https://${account.name}.blob.core.windows.net/${container.name}/${blob.name}?${blobSAS.serviceSasToken}
+          - name: WEBSITE_NODE_DEFAULT_VERSION
+            value: "~12"
+          - name: FUNCTIONS_EXTENSION_VERSION
+            value: "~3"
+
+outputs:
+  originURL: ${account.primaryEndpoints.web}
+  originHostname: ${account.primaryEndpoints.web}
+  apiURL: https://${app.defaultHostName}/api/hello-world?name=Pulumi

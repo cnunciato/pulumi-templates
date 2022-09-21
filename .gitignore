@@ -8,3 +8,5 @@ test
 */*/csharp
 */*/java
 */*/yaml
+*/dist/*/bin
+*/dist/*/lib

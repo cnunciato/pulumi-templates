@@ -1,0 +1,3 @@
+name: templates-serverless-{cloud}-{lang}
+description: A serverless app on AWS
+runtime: yaml
