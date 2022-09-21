@@ -29,7 +29,7 @@ variables:
         contentEncoding: deflate
 
   source:
-    Fn::FileArchive: ./src
+    Fn::FileArchive: ./api
 
 resources:
   resource-group:

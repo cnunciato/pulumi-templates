@@ -33,7 +33,7 @@ const blobSAS = pulumi.all([account.name, resourceGroup.name, account.name, cont
     contentDisposition: "inline",
     contentEncoding: "deflate",
 }));
-const source = new pulumi.asset.FileArchive("./src");
+const source = new pulumi.asset.FileArchive("./api");
 const website = new azure_native.storage.StorageAccountStaticWebsite("website", {
     resourceGroupName: resourceGroup.name,
     accountName: account.name,

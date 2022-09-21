@@ -48,7 +48,7 @@ func main() {
 		if err != nil {
 			return err
 		}
-		source := pulumi.NewFileArchive("./src")
+		source := pulumi.NewFileArchive("./api")
 		website, err := storage.NewStorageAccountStaticWebsite(ctx, "website", &storage.StorageAccountStaticWebsiteArgs{
 			ResourceGroupName: resourceGroup.Name,
 			AccountName:       account.Name,

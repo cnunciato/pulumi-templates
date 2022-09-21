@@ -35,7 +35,7 @@ blob_sas = pulumi.Output.all(account.name, resource_group.name, account.name, co
     cache_control="max-age=5",
     content_disposition="inline",
     content_encoding="deflate"))
-source = pulumi.FileArchive("./src")
+source = pulumi.FileArchive("./api")
 website = azure_native.storage.StorageAccountStaticWebsite("website",
     resource_group_name=resource_group.name,
     account_name=account.name,

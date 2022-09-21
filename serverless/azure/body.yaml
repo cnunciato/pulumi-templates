@@ -101,6 +101,18 @@ resources:
             value: "~12"
           - name: FUNCTIONS_EXTENSION_VERSION
             value: "~3"
+        cors:
+          allowedOrigins:
+            - "*"
+
+  config.json:
+    type: azure-native:storage:Blob
+    properties:
+      source: '{ "apiEndpoint": https://${app.defaultHostName}/api }'
+      contentType: application/json
+      resourceGroupName: ${resourceGroup.name}
+      accountName: ${account.name}
+      containerName: ${website.containerName}
 
 outputs:
   originURL: ${account.primaryEndpoints.web}

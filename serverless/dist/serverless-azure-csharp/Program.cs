@@ -3,7 +3,7 @@ using Pulumi;
 using AzureNative = Pulumi.AzureNative;
 using SyncedFolder = Pulumi.SyncedFolder;
 
-return await Deployment.RunAsync(() => 
+return await Deployment.RunAsync(() =>
 {
     var config = new Config();
     var path = config.Get("path") ?? "./www";
@@ -44,7 +44,7 @@ return await Deployment.RunAsync(() =>
         ContentEncoding = "deflate",
     });
 
-    var source = new FileArchive("./src");
+    var source = new FileArchive("./api");
 
     var website = new AzureNative.Storage.StorageAccountStaticWebsite("website", new()
     {
@@ -132,4 +132,3 @@ return await Deployment.RunAsync(() =>
         ["apiURL"] = app.DefaultHostName.Apply(defaultHostName => $"https://{defaultHostName}/api/hello-world?name=Pulumi"),
     };
 });
-
