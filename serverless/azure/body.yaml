@@ -27,6 +27,7 @@ variables:
         cacheControl: max-age=5
         contentDisposition: inline
         contentEncoding: deflate
+
   configFile:
     Fn::StringAsset: '{ "apiEndpoint": https://{app.defaultHostName}/api }'
 
