@@ -28,7 +28,7 @@ variables:
         contentDisposition: inline
         contentEncoding: deflate
   configFile:
-    Fn::StringAsset: '{ "apiEndpoint": https://${app.defaultHostName}/api }'
+    Fn::StringAsset: '{ "apiEndpoint": https://{app.defaultHostName}/api }'
 
   source:
     Fn::FileArchive: ./api
@@ -83,7 +83,6 @@ resources:
       resourceGroupName: ${resource-group.name}
       containerName: ${container.name}
       source: ${source}
-      type: block
 
   app:
     type: azure-native:web:WebApp
