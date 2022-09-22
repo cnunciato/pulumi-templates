@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using Pulumi;
 using AzureNative = Pulumi.AzureNative;
 using SyncedFolder = Pulumi.SyncedFolder;
 
-return await Deployment.RunAsync(() => 
+return await Deployment.RunAsync(() =>
 {
     var config = new Config();
     var path = config.Get("path") ?? "./www";
@@ -37,7 +38,7 @@ return await Deployment.RunAsync(() =>
         SharedAccessExpiryTime = "2030-01-01",
         Resource = "c",
         Permissions = "r",
-        CanonicalizedResource = $"/blob/{account.Name}/{container.Name}",
+        CanonicalizedResource = Output.Tuple(account.Name, container.Name).Apply(values => $"/blob/{values.Item1}/{values.Item2}"),
         ContentType = "application/json",
         CacheControl = "max-age=5",
         ContentDisposition = "inline",
@@ -91,35 +92,30 @@ return await Deployment.RunAsync(() =>
             {
                 new AzureNative.Web.Inputs.NameValuePairArgs
                 {
-                    Name = "runtime",
-                    Value = "node",
-                },
-                new AzureNative.Web.Inputs.NameValuePairArgs
-                {
                     Name = "FUNCTIONS_WORKER_RUNTIME",
                     Value = "node",
                 },
                 new AzureNative.Web.Inputs.NameValuePairArgs
                 {
-                    Name = "WEBSITE_RUN_FROM_PACKAGE",
-                    Value = Output.Tuple(account.Name, container.Name, blob.Name, blobSAS.Apply(listStorageAccountServiceSASResult => listStorageAccountServiceSASResult)).Apply(values =>
-                    {
-                        var accountName = values.Item1;
-                        var containerName = values.Item2;
-                        var blobName = values.Item3;
-                        var blobSAS = values.Item4;
-                        return $"https://{accountName}.blob.core.windows.net/{containerName}/{blobName}?{blobSAS.Apply(listStorageAccountServiceSASResult => listStorageAccountServiceSASResult.ServiceSasToken)}";
-                    }),
-                },
-                new AzureNative.Web.Inputs.NameValuePairArgs
-                {
                     Name = "WEBSITE_NODE_DEFAULT_VERSION",
-                    Value = "~12",
+                    Value = "~14",
                 },
                 new AzureNative.Web.Inputs.NameValuePairArgs
                 {
                     Name = "FUNCTIONS_EXTENSION_VERSION",
                     Value = "~3",
+                },
+                new AzureNative.Web.Inputs.NameValuePairArgs
+                {
+                    Name = "WEBSITE_RUN_FROM_PACKAGE",
+                    Value = Output.Tuple(account.Name, container.Name, blob.Name, blobSAS.Apply(result => result.ServiceSasToken)).Apply(values =>
+                    {
+                        var accountName = values.Item1;
+                        var containerName = values.Item2;
+                        var blobName = values.Item3;
+                        var token = values.Item4;
+                        return $"https://{accountName}.blob.core.windows.net/{containerName}/{blobName}?{token}";
+                    }),
                 },
             },
             Cors = new AzureNative.Web.Inputs.CorsSettingsArgs
@@ -132,6 +128,17 @@ return await Deployment.RunAsync(() =>
         },
     });
 
+    var cfg = app.DefaultHostName.Apply(hostname => new Dictionary<string, string>() { ["apiEndpoint"] = $"https://{hostname}/api" });
+    var siteConfig = new AzureNative.Storage.Blob("config.json", new()
+    {
+        // Source = app.DefaultHostName.Apply(hostname => new Pulumi.StringAsset(JsonSerializer.Serialize(cfg))),
+        Source = app.DefaultHostName.Apply(hostname => new Pulumi.StringAsset("{ \"api\": \"https://" + hostname  + "/api\" }") as AssetOrArchive),
+        ContentType = "application/json",
+        AccountName = account.Name,
+        ResourceGroupName = resourceGroup.Name,
+        ContainerName = website.ContainerName,
+    });
+
     return new Dictionary<string, object?>
     {
         ["originURL"] = account.PrimaryEndpoints.Apply(primaryEndpoints => primaryEndpoints.Web),
@@ -140,4 +147,3 @@ return await Deployment.RunAsync(() =>
         ["apiHostname"] = app.DefaultHostName,
     };
 });
-

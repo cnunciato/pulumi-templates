@@ -3,9 +3,23 @@
 <head>
     <meta charset="utf-8">
     <title>Hello, world!</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const response = await fetch("config.json");
+            const config = await response.json();
+
+            setInterval(async () => {
+                const apiURL = `${config.api}/date`;
+                const response = await fetch(apiURL);
+                const data = await response.json();
+                document.querySelector("#now").textContent = `The time is now ${data.now}.`;
+            }, 1000);
+        });
+    </script>
 </head>
 <body>
     <h1>Hello, world! 👋</h1>
     <p>Deployed with 💜 by <a href="https://pulumi.com/">Pulumi</a>.</p>
+    <p id="now"></p>
 </body>
 </html>
