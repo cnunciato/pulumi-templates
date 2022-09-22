@@ -1,6 +1,7 @@
 .DS_Store
 .envrc
 test
+node_modules
 */*/Pulumi.yaml
 */*/typescript
 */*/python

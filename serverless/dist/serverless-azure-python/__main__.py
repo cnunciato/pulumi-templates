@@ -23,11 +23,11 @@ container = azure_native.storage.BlobContainer("container",
     account_name=account.name,
     resource_group_name=resource_group.name,
     public_access=azure_native.storage.PublicAccess.NONE)
-blob_sas = pulumi.Output.all(account.name, resource_group.name, account.name, container.name).apply(lambda accountName, resourceGroupName, accountName1, containerName: azure_native.storage.list_storage_account_service_sas_output(account_name=account_name,
+blob_sas = pulumi.Output.all(resource_group.name, account.name, account.name, container.name).apply(lambda resourceGroupName, accountName, accountName1, containerName: azure_native.storage.list_storage_account_service_sas_output(resource_group_name=resource_group_name,
+    account_name=account_name,
     protocols=azure_native.storage.HttpProtocol.HTTPS,
+    shared_access_start_time="2022-01-01",
     shared_access_expiry_time="2030-01-01",
-    shared_access_start_time="2021-01-01",
-    resource_group_name=resource_group_name,
     resource="c",
     permissions="r",
     canonicalized_resource=f"/blob/{account_name1}/{container_name}",
@@ -37,8 +37,8 @@ blob_sas = pulumi.Output.all(account.name, resource_group.name, account.name, co
     content_encoding="deflate"))
 source = pulumi.FileArchive("./api")
 website = azure_native.storage.StorageAccountStaticWebsite("website",
-    resource_group_name=resource_group.name,
     account_name=account.name,
+    resource_group_name=resource_group.name,
     index_document=index_document,
     error404_document=error_document)
 synced_folder = synced_folder.AzureBlobFolder("synced-folder",
@@ -84,7 +84,11 @@ app = azure_native.web.WebApp("app",
                 value="~3",
             ),
         ],
+        cors=azure_native.web.CorsSettingsArgs(
+            allowed_origins=["*"],
+        ),
     ))
 pulumi.export("originURL", account.primary_endpoints.web)
 pulumi.export("originHostname", account.primary_endpoints.web)
-pulumi.export("apiURL", app.default_host_name.apply(lambda default_host_name: f"https://{default_host_name}/api/hello-world?name=Pulumi"))
+pulumi.export("apiURL", app.default_host_name.apply(lambda default_host_name: f"https://{default_host_name}/api"))
+pulumi.export("apiHostname", app.default_host_name)

@@ -50,8 +50,8 @@ func main() {
 		}
 		source := pulumi.NewFileArchive("./api")
 		website, err := storage.NewStorageAccountStaticWebsite(ctx, "website", &storage.StorageAccountStaticWebsiteArgs{
-			ResourceGroupName: resourceGroup.Name,
 			AccountName:       account.Name,
+			ResourceGroupName: resourceGroup.Name,
 			IndexDocument:     pulumi.String(indexDocument),
 			Error404Document:  pulumi.String(errorDocument),
 		})
@@ -119,6 +119,11 @@ func main() {
 						Value: pulumi.String("~3"),
 					},
 				},
+				Cors: &web.CorsSettingsArgs{
+					AllowedOrigins: pulumi.StringArray{
+						pulumi.String("*"),
+					},
+				},
 			},
 		})
 		if err != nil {
@@ -131,8 +136,9 @@ func main() {
 			return primaryEndpoints.Web, nil
 		}).(pulumi.StringOutput))
 		ctx.Export("apiURL", app.DefaultHostName.ApplyT(func(defaultHostName string) (string, error) {
-			return fmt.Sprintf("https://%v/api/hello-world?name=Pulumi", defaultHostName), nil
+			return fmt.Sprintf("https://%v/api", defaultHostName), nil
 		}).(pulumi.StringOutput))
+		ctx.Export("apiHostname", app.DefaultHostName)
 		return nil
 	})
 }

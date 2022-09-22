@@ -3,7 +3,7 @@ using Pulumi;
 using AzureNative = Pulumi.AzureNative;
 using SyncedFolder = Pulumi.SyncedFolder;
 
-return await Deployment.RunAsync(() =>
+return await Deployment.RunAsync(() => 
 {
     var config = new Config();
     var path = config.Get("path") ?? "./www";
@@ -30,11 +30,11 @@ return await Deployment.RunAsync(() =>
 
     var blobSAS = AzureNative.Storage.ListStorageAccountServiceSAS.Invoke(new()
     {
+        ResourceGroupName = resourceGroup.Name,
         AccountName = account.Name,
         Protocols = AzureNative.Storage.HttpProtocol.Https,
+        SharedAccessStartTime = "2022-01-01",
         SharedAccessExpiryTime = "2030-01-01",
-        SharedAccessStartTime = "2021-01-01",
-        ResourceGroupName = resourceGroup.Name,
         Resource = "c",
         Permissions = "r",
         CanonicalizedResource = $"/blob/{account.Name}/{container.Name}",
@@ -48,8 +48,8 @@ return await Deployment.RunAsync(() =>
 
     var website = new AzureNative.Storage.StorageAccountStaticWebsite("website", new()
     {
-        ResourceGroupName = resourceGroup.Name,
         AccountName = account.Name,
+        ResourceGroupName = resourceGroup.Name,
         IndexDocument = indexDocument,
         Error404Document = errorDocument,
     });
@@ -122,6 +122,13 @@ return await Deployment.RunAsync(() =>
                     Value = "~3",
                 },
             },
+            Cors = new AzureNative.Web.Inputs.CorsSettingsArgs
+            {
+                AllowedOrigins = new[]
+                {
+                    "*",
+                },
+            },
         },
     });
 
@@ -129,6 +136,8 @@ return await Deployment.RunAsync(() =>
     {
         ["originURL"] = account.PrimaryEndpoints.Apply(primaryEndpoints => primaryEndpoints.Web),
         ["originHostname"] = account.PrimaryEndpoints.Apply(primaryEndpoints => primaryEndpoints.Web),
-        ["apiURL"] = app.DefaultHostName.Apply(defaultHostName => $"https://{defaultHostName}/api/hello-world?name=Pulumi"),
+        ["apiURL"] = app.DefaultHostName.Apply(defaultHostName => $"https://{defaultHostName}/api"),
+        ["apiHostname"] = app.DefaultHostName,
     };
 });
+

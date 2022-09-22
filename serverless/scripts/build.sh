@@ -29,7 +29,7 @@ for cloud in $CLOUDS; do
 
             # Copy the www folder into the project.
             cp -R "../www" "$lang/"
-            cp -R "../src" "$lang/"
+            cp -R "../api" "$lang/"
 
             # Prepare and copy the completed template to the dist folder.
             template_dir="../dist/serverless-${cloud}-${lang}"

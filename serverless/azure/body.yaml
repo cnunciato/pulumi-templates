@@ -15,11 +15,11 @@ variables:
     Fn::Invoke:
       Function: azure-native:storage:listStorageAccountServiceSAS
       Arguments:
+        resourceGroupName: ${resource-group.name}
         accountName: ${account.name}
         protocols: https
+        sharedAccessStartTime: "2022-01-01"
         sharedAccessExpiryTime: "2030-01-01"
-        sharedAccessStartTime: "2021-01-01"
-        resourceGroupName: ${resource-group.name}
         resource: c
         permissions: r
         canonicalizedResource: /blob/${account.name}/${container.name}
@@ -27,9 +27,11 @@ variables:
         cacheControl: max-age=5
         contentDisposition: inline
         contentEncoding: deflate
+  configFile:
+    Fn::StringAsset: '{ "apiEndpoint": https://${app.defaultHostName}/api }'
 
   source:
-    Fn::FileArchive: ./src
+    Fn::FileArchive: ./api
 
 resources:
   resource-group:
@@ -46,8 +48,8 @@ resources:
   website:
     type: azure-native:storage:StorageAccountStaticWebsite
     properties:
-      resourceGroupName: ${resource-group.name}
       accountName: ${account.name}
+      resourceGroupName: ${resource-group.name}
       indexDocument: ${indexDocument}
       error404Document: ${errorDocument}
 
@@ -81,7 +83,7 @@ resources:
       resourceGroupName: ${resource-group.name}
       containerName: ${container.name}
       source: ${source}
-      # type: block
+      type: block
 
   app:
     type: azure-native:web:WebApp
@@ -108,13 +110,14 @@ resources:
   config.json:
     type: azure-native:storage:Blob
     properties:
-      source: '{ "apiEndpoint": https://${app.defaultHostName}/api }'
+      source: ${configFile}
       contentType: application/json
-      resourceGroupName: ${resourceGroup.name}
       accountName: ${account.name}
+      resourceGroupName: ${resource-group.name}
       containerName: ${website.containerName}
 
 outputs:
   originURL: ${account.primaryEndpoints.web}
   originHostname: ${account.primaryEndpoints.web}
-  apiURL: https://${app.defaultHostName}/api/hello-world?name=Pulumi
+  apiURL: https://${app.defaultHostName}/api
+  apiHostname: ${app.defaultHostName}
