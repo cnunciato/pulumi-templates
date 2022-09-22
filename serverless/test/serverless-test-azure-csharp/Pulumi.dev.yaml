@@ -1,0 +1,5 @@
+config:
+  azure-native:location: WestUS
+  serverless-test-azure-csharp:errorDocument: error.html
+  serverless-test-azure-csharp:indexDocument: index.html
+  serverless-test-azure-csharp:path: ./www

@@ -1,0 +1,5 @@
+config:
+  alsldkjfhalskjfhaskdjfha:errorDocument: error.html
+  alsldkjfhalskjfhaskdjfha:indexDocument: index.html
+  alsldkjfhalskjfhaskdjfha:path: ./www
+  aws:region: us-west-2
