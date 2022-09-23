@@ -1,0 +1,3 @@
+name: serverless-test-azure-typescript
+description: A serverless app on Azure
+runtime: nodejs
