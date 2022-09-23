@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.Json;
 using Pulumi;
 using AzureNative = Pulumi.AzureNative;
 using SyncedFolder = Pulumi.SyncedFolder;
@@ -114,7 +113,8 @@ return await Deployment.RunAsync(() =>
                         var containerName = values.Item2;
                         var blobName = values.Item3;
                         var token = values.Item4;
-                        return $"https://{accountName}.blob.core.windows.net/{containerName}/{blobName}?{token}";
+                        var url = $"https://{accountName}.blob.core.windows.net/{containerName}/{blobName}?{token}";
+                        return url;
                     }),
                 },
             },

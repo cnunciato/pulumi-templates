@@ -114,7 +114,6 @@ return await Deployment.RunAsync(() =>
                         var blobName = values.Item3;
                         var token = values.Item4;
                         var url = $"https://{accountName}.blob.core.windows.net/{containerName}/{blobName}?{token}";
-                        Pulumi.Log.Info(url);
                         return url;
                     }),
                 },

@@ -43,29 +43,11 @@ func main() {
 		container, err := storage.NewBlobContainer(ctx, "container", &storage.BlobContainerArgs{
 			AccountName:       account.Name,
 			ResourceGroupName: resourceGroup.Name,
-			PublicAccess:      storage.PublicAccessContainer,
+			PublicAccess:      storage.PublicAccessNone,
 		})
 		if err != nil {
 			return err
 		}
-
-		// blobSAS := pulumi.All(resourceGroup.Name, account.Name, container.Name).ApplyT(func(args []interface{}) storage.ListStorageAccountServiceSASResultOutput {
-		// 	accountName := args[0].(string)
-		// 	containerName := args[1].(string)
-		// 	return storage.ListStorageAccountServiceSASOutput(ctx, storage.ListStorageAccountServiceSASOutputArgs{
-		// 		AccountName:            pulumi.String(accountName),
-		// 		Protocols:              storage.HttpProtocolHttps,
-		// 		SharedAccessStartTime:  pulumi.String("2022-01-01"),
-		// 		SharedAccessExpiryTime: pulumi.String("2030-01-01"),
-		// 		Resource:               pulumi.String("c"),
-		// 		Permissions:            pulumi.String("r"),
-		// 		ContentType:            pulumi.String("application/json"),
-		// 		CacheControl:           pulumi.String("max-age=5"),
-		// 		ContentDisposition:     pulumi.String("inline"),
-		// 		ContentEncoding:        pulumi.String("deflate"),
-		// 		CanonicalizedResource:  pulumi.String(fmt.Sprintf("/blob/%s/%s", accountName, containerName)),
-		// 	})
-		// }).(storage.ListStorageAccountServiceSASResultOutput)
 
 		website, err := storage.NewStorageAccountStaticWebsite(ctx, "website", &storage.StorageAccountStaticWebsiteArgs{
 			AccountName:       account.Name,
@@ -105,10 +87,6 @@ func main() {
 			return err
 		}
 
-		// _ = blobSAS.ApplyT(func(result storage.ListStorageAccountServiceSASResult) string {
-		// 	return result.ServiceSasToken
-		// })
-
 		app, err := web.NewWebApp(ctx, "app", &web.WebAppArgs{
 			ResourceGroupName: resourceGroup.Name,
 			ServerFarmId:      plan.ID(),
@@ -129,14 +107,42 @@ func main() {
 					},
 					&web.NameValuePairArgs{
 						Name: pulumi.String("WEBSITE_RUN_FROM_PACKAGE"),
-						Value: pulumi.All(account.Name, container.Name, blob.Name).ApplyT(func(_args []interface{}) string {
-							accountName := _args[0].(string)
-							containerName := _args[1].(string)
-							blobName := _args[2].(string)
-							// token := _args[3].(string)
-							// url := fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s?%s", accountName, containerName, blobName, token)
-							return fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s", accountName, containerName, blobName)
-						}).(pulumi.StringOutput),
+						Value: pulumi.All(resourceGroup.Name, account.Name, container.Name, blob.Name).ApplyT(
+							func(args []interface{}) string {
+								ctx.Log.Info("Testing", nil)
+
+								resourceGroupName := args[0].(string)
+								accountName := args[1].(string)
+								containerName := args[2].(string)
+								blobName := args[3].(string)
+
+								protocol := storage.HttpProtocolHttps
+								result, err := storage.ListStorageAccountServiceSAS(ctx, &storage.ListStorageAccountServiceSASArgs{
+									ResourceGroupName:      resourceGroupName,
+									AccountName:            accountName,
+									Protocols:              &protocol,
+									SharedAccessStartTime:  pulumi.StringRef("2022-01-01"),
+									SharedAccessExpiryTime: pulumi.StringRef("2030-01-01"),
+									Resource:               pulumi.StringRef("c"),
+									Permissions:            pulumi.StringRef("r"),
+									ContentType:            pulumi.StringRef("application/json"),
+									CacheControl:           pulumi.StringRef("max-age=5"),
+									ContentDisposition:     pulumi.StringRef("inline"),
+									ContentEncoding:        pulumi.StringRef("deflate"),
+									CanonicalizedResource:  fmt.Sprintf("/blob/%s/%s", accountName, containerName),
+								})
+								if err != nil {
+									ctx.Log.Info(err.Error(), nil)
+									return ""
+								}
+
+								token := result.ServiceSasToken
+								url := fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s?%s", accountName, containerName, blobName, token)
+
+								ctx.Log.Info(url, nil)
+
+								return url
+							}).(pulumi.StringPtrInput),
 					},
 				},
 				Cors: &web.CorsSettingsArgs{
