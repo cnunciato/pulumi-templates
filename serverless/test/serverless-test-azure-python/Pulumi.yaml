@@ -1,0 +1,6 @@
+name: serverless-test-azure-python
+description: A serverless app on Azure
+runtime:
+    name: python
+    options:
+        virtualenv: venv

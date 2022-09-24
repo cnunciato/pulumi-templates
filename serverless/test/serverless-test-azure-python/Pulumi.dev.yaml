@@ -1,0 +1,5 @@
+config:
+  azure-native:location: WestUS
+  serverless-test-azure-python:errorDocument: error.html
+  serverless-test-azure-python:indexDocument: index.html
+  serverless-test-azure-python:path: ./www

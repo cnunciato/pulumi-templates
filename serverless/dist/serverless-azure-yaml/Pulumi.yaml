@@ -119,7 +119,7 @@ resources:
           - name: WEBSITE_RUN_FROM_PACKAGE
             value: https://${account.name}.blob.core.windows.net/${container.name}/${blob.name}?${blobSAS.serviceSasToken}
           - name: WEBSITE_NODE_DEFAULT_VERSION
-            value: "~12"
+            value: "~14"
           - name: FUNCTIONS_EXTENSION_VERSION
             value: "~3"
         cors:
