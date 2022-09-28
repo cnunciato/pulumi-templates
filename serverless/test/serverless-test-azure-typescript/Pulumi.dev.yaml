@@ -1,5 +1,0 @@
-config:
-  azure-native:location: WestUS
-  serverless-test-azure-typescript:errorDocument: error.html
-  serverless-test-azure-typescript:indexDocument: index.html
-  serverless-test-azure-typescript:path: ./www

@@ -8,5 +8,5 @@ node_modules
 */*/csharp
 */*/java
 */*/yaml
-*/dist/*/bin
-*/dist/*/lib
+*/dist
+*/test

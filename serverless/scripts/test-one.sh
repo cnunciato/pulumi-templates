@@ -19,12 +19,10 @@ mkdir -p "$test_dir"
 pushd "$test_dir"
 
     if [ "$cloud" == "gcp" ]; then
-        pulumi new "../../dist/serverless-${cloud}-${lang}" -c "gcp:project=pulumi-development"
+        pulumi new "${HOME}/go/src/github.com/pulumi/templates/serverless-${cloud}-${lang}" -c "gcp:project=pulumi-development"
     else
-        pulumi new "../../dist/serverless-${cloud}-${lang}"
+        pulumi new "${HOME}/go/src/github.com/pulumi/templates/serverless-${cloud}-${lang}"
     fi
 
-    pulumi up
-    pulumi destroy
-    pulumi stack rm
+    code .
 popd

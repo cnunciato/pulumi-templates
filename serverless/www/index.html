@@ -4,22 +4,26 @@
     <meta charset="utf-8">
     <title>Hello, world!</title>
     <script>
+        var config = {};
+
         document.addEventListener("DOMContentLoaded", async () => {
             const response = await fetch("config.json");
-            const config = await response.json();
-
-            setInterval(async () => {
-                const apiURL = `${config.api}/date`;
-                const response = await fetch(apiURL);
-                const data = await response.json();
-                document.querySelector("#now").textContent = `The time is now ${data.now}.`;
-            }, 1000);
+            config = await response.json();
         });
+
+        async function getTheTime() {
+            const response = await fetch(`${config.api}/date`);
+            const data = await response.json();
+            document.querySelector("#the-time").textContent = `The time is now ${data.now}.`;
+        }
     </script>
 </head>
 <body>
-    <h1>Hello, world! 👋</h1>
-    <p>Deployed with 💜 by <a href="https://pulumi.com/">Pulumi</a>.</p>
-    <p id="now"></p>
+    <h1>⌚ What time is it?</h1>
+    <p>
+        <button onclick="getTheTime()">Get the time</button>
+    </p>
+    <p id="the-time"></p>
+    <p>Deployed with 💜 by <a href="https://pulumi.com/templates">Pulumi</a>.</p>
 </body>
 </html>

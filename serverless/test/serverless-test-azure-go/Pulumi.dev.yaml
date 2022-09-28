@@ -1,5 +1,0 @@
-config:
-  azure-native:location: WestUS
-  serverless-test-azure-go:errorDocument: error.html
-  serverless-test-azure-go:indexDocument: index.html
-  serverless-test-azure-go:path: ./www
